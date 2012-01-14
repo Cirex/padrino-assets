@@ -15,6 +15,7 @@ module Padrino
       # @example
       #   Padrino::Assets.load_paths << Padrino.root('vendor', '**', 'assets')
       #
+      # @since 0.1.0
       # @api public
       def load_paths
         @_load_paths ||= ['app/assets/**', 'lib/assets/**'].map do |file|
@@ -28,6 +29,7 @@ module Padrino
       # @return [Sprockets::Environment]
       #   Sprockets environment
       #
+      # @since 0.1.0
       # @api public
       def environment
         @_environment
@@ -39,6 +41,7 @@ module Padrino
       # @return [Sprockets::Manifest]
       #   Sprockets manifest
       #
+      # @since 0.1.0
       # @api public
       def manifest
         @_manifest
@@ -51,6 +54,8 @@ module Padrino
         app.set :assets_version,  1.0
         app.set :assets_host,     nil
         app.set :compress_assets, true
+        app.set :js_compressor,   nil
+        app.set :css_compressor,  nil
         app.set :index_assets,    -> { app.environment == :production }
         app.set :manifest_file,   -> { File.join(app.public_folder, app.assets_prefix, 'manifest.json') }
         app.set :precompile_assets,  [ /^.+\.(?!js|css).+$/i, /^application\.(js|css)$/i ]
@@ -65,6 +70,11 @@ module Padrino
               if app.respond_to?(:caching) && app.caching?
                 environment.cache = app.cache
               end
+            end
+
+            if app.compress_assets?
+              environment.js_compressor  = app.js_compressor
+              environment.css_compressor = app.css_compressor
             end
           end
 

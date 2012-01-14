@@ -74,7 +74,7 @@
       # Returns an HTML image element with given sources and options
       #
       # @overload image(sources, options={})
-      #   @param [String] source
+      #   @param [Array<String>] sources
       #     Sources
       #   @param [Hash] options
       #     HTML options
