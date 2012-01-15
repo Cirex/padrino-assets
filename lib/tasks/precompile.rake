@@ -21,6 +21,10 @@
           manifest.compile(logical_path)
         end
       end
+
+      if app.compress_assets?
+        Rake::Task['assets:compress'].invoke
+      end
     end
   end
 end
