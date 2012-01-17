@@ -206,7 +206,7 @@
 
         if sources.is_a?(Array)
           content_tag(:video, options) do
-            sources.collect { |source| tag(:source, src: asset_path(source)) }.join
+            sources.collect { |source| tag(:source, src: asset_path(source)) }.join("\n")
           end
         else
           tag(:video, options.reverse_merge(src: asset_path(sources)))
@@ -265,7 +265,7 @@
 
         if sources.is_a?(Array)
           content_tag(:audio, options) do
-            sources.collect { |source| tag(:source, src: asset_path(source)) }.join
+            sources.collect { |source| tag(:source, src: asset_path(source)) }.join("\n")
           end
         else
           tag(:audio, options.reverse_merge(src: asset_path(sources)))
@@ -363,9 +363,8 @@
 
       # @private
       def rewrite_asset_host(source)
-        host = settings.assets_host
-        host = host.call(source) if host.respond_to?(:call)
-        host ? "#{host}#{source}" : source
+        host = settings.assets_host rescue settings.assets_host(source, request)
+        host ? host + source : source
       end
     end
   end

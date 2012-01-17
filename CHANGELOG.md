@@ -1,6 +1,7 @@
 ﻿# Version History
 
 ### 0.2.0 - (UNRELEASED) [IN DEVELOPMENT]
+* The current `request` is now passed to **:assets_host** when a `Proc` is used
 * Added the rake task `assets:compress` for [deflating](http://en.wikipedia.org/wiki/Gzip) assets
 * Basic support for asset minification
 
