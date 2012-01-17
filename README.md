@@ -28,6 +28,26 @@ map '/assets' do
 end
 ```
 
+By default, Sprockets is configured to load assets from your project's `app/assets` and `lib/assets` directories. Any files stored in these directories are readily available to the included helpers and will be served by the Sprockets middleware.
+
+The following directories are no longer used and will instead be served statically:
+
+* `public/images`
+* `public/stylesheets`
+* `public/javascripts`
+
+Because of this you should now be storing your assets in the following directories:
+
+* `app/assets/images`
+* `app/assets/stylesheets`
+* `app/assets/javascripts`
+
+Should your project need to add additional paths you can do so by adding the following line:
+
+``` ruby
+Padrino::Assets.load_paths << 'path/to/my/assets'
+```
+
 ### Dependencies
 
 * [Padrino-Core](https://github.com/padrino/padrino-framework) and [Padrino-Helpers](https://github.com/padrino/padrino-framework)
@@ -36,7 +56,6 @@ end
 
 ### TODO
 
-* Support for CSS/Javascript minification
 * Additional documentation
 * Tests
 
