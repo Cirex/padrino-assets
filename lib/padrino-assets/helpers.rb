@@ -35,8 +35,8 @@
           tag(:link, options.reverse_merge(href: asset_path(source, :css)))
         end.join("\n")
       end
-      alias_method :include_stylesheets,    :include_stylesheet
-      alias_method :stylesheet_include_tag, :include_stylesheet
+      alias_method :include_stylesheets, :include_stylesheet
+      alias_method :stylesheet_link_tag, :include_stylesheet
 
       ##
       # Returns an HTML script tag for the specified sources
