@@ -17,7 +17,9 @@ Gem::Specification.new do |s|
   s.require_paths = ['lib']
 
   s.add_dependency 'sprockets', '~> 2.3.0'
-
   s.add_dependency 'padrino-core'
   s.add_dependency 'padrino-helpers'
+
+  s.add_development_dependency 'minitest'
+  s.add_development_dependency 'webrat'
 end

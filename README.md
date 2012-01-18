@@ -30,13 +30,13 @@ end
 
 By default, Sprockets is configured to load assets from your project's `app/assets` and `lib/assets` directories. Any files stored in these directories are readily available to the included helpers and will be served by the Sprockets middleware.
 
-The following directories are no longer used and will instead be served statically:
+Because of this the following directories are no longer used and will instead be served statically:
 
 * `public/images`
 * `public/stylesheets`
 * `public/javascripts`
 
-Because of this you should now be storing your assets in the following directories:
+You should now be storing your assets in the following directories:
 
 * `app/assets/images`
 * `app/assets/stylesheets`
