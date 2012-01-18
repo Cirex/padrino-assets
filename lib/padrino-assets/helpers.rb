@@ -298,8 +298,10 @@
       # @since 0.1.0
       # @api public
       def is_uri?(source)
-        !!(source =~ %r(^[a-z]+://|^//?))
+        !!(source =~ URI_REGEXP)
       end
+
+      URI_REGEXP = %r[^[a-z]+://|^//?]
 
       ##
       # Returns a modified asset source based on the current application settings
