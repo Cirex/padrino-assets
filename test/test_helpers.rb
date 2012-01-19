@@ -52,7 +52,7 @@ describe 'Helpers' do
       asset.must_equal '/test/application.css'
     end
 
-    it 'should not interfere with a direct URI' do
+    it 'should not interfere with a reference URI' do
       asset = asset_path('/application.css')
       asset.must_equal '/application.css'
 
@@ -158,17 +158,17 @@ describe 'Helpers' do
       image.must_have_tag :img, width: '40', height: '40'
     end
 
-    it 'should allow you to set the width and height with size' do
+    it 'should allow you to set the :width and :height with size' do
       image = image 'application.jpg', size: '40x40'
       image.must_have_tag :img, width: '40', height: '40'
     end
 
-    it 'should allow you to set the width' do
+    it 'should allow you to set the :width' do
       image = image 'application.jpg', width: '40'
       image.must_have_tag :img, width: '40'
     end
 
-    it 'should allow you to set the height' do
+    it 'should allow you to set the :height' do
       image = image 'application.jpg', height: '40'
       image.must_have_tag :img, height: '40'
     end
@@ -180,21 +180,160 @@ describe 'Helpers' do
 
     it 'should automatically set an alternate text when none present' do
       image = image 'application.jpg'
-      image.must_have_tag :img, alt: 'application'
+      image.must_have_tag :img, alt: 'Application'
     end
 
-    it 'should allow you to set the class' do
+    it 'should allow you to set the :class' do
       image = image 'application.jpg', class: 'image'
       image.must_have_tag :img, class: 'image'
     end
 
-    it 'should allow you to set the identifier' do
+    it 'should allow you to set the :id' do
       image = image 'application.jpg', id: 'logo'
       image.must_have_tag :img, id: 'logo'
     end
 
     it 'should be aliased for compatibility' do
       respond_to?(:image_tag).must_equal true
+    end
+  end
+
+  describe 'video' do
+    it 'should accept multiple sources' do
+      videos = videos 'test.webm', 'test.mov'
+      videos.must_have_tag :source, src: '/assets/test.webm'
+      videos.must_have_tag :source, src: '/assets/test.mov'
+    end
+
+    it 'should accept multiple sources with attributes' do
+      videos = videos 'test.webm', 'test.mov', width: '40', height: '40'
+      videos.must_have_tag :video, width: '40', height: '40'
+      videos.must_have_tag :source, src: '/assets/test.webm'
+      videos.must_have_tag :source, src: '/assets/test.mov'
+    end
+
+    it 'should accept a single source' do
+      video = video 'test.webm'
+      video.must_have_tag :video, src: '/assets/test.webm'
+    end
+
+    it 'should accept a single source with attributes' do
+      video = video 'test.webm', width: '40', height: '40'
+      video.must_have_tag :video, src: '/assets/test.webm', width: '40', height: '40'
+    end
+
+    it 'should allow you to set the :class' do
+      video = video 'test.webm', class: 'video'
+      video.must_have_tag :video, class: 'video'
+    end
+
+    it 'should allow you to set the :id' do
+      video = video 'test.webm', id: 'video'
+      video.must_have_tag :video, id: 'video'
+    end
+
+    it 'should allow you to set the :width and :height with :size' do
+      video = video 'test.webm', size: '40x40'
+      video.must_have_tag :video, width: '40', height: '40'
+    end
+
+    it 'should allow you to set the :width' do
+      video = video 'test.webm', width: '40'
+      video.must_have_tag :video, width: '40'
+    end
+
+    it 'should allow you to set the :height' do
+      video = video 'test.webm', height: '40'
+      video.must_have_tag :video, height: '40'
+    end
+
+    it 'should allow :poster to use an absolute URI' do
+      video = video 'test.webm', poster: 'http://test.com/poster.jpg'
+      video.must_have_tag :video, poster: 'http://test.com/poster.jpg'
+    end
+
+    it 'should use asset_path when :poster is present' do
+      video = video 'test.webm', poster: 'poster.jpg'
+      video.must_have_tag :video, poster: '/assets/poster.jpg'
+    end
+
+    it 'should allow you to set the :preload method' do
+      video = video 'test.webm', preload: 'auto'
+      video.must_have_tag :video, preload: 'auto'
+    end
+
+    it 'should allow you to set :muted to true' do
+      video = video 'test.webm', muted: true
+      video.must_have_tag :video, muted: 'muted'
+    end
+
+    it 'should allow you to set :autoplay to true' do
+      video = video 'test.webm', autoplay: true
+      video.must_have_tag :video, autoplay: 'autoplay'
+    end
+
+    it 'should allow you to set :loop to true' do
+      video = video 'test.webm', loop: true
+      video.must_have_tag :video, loop: 'loop'
+    end
+
+    it 'should allow you to set :controls to true' do
+      video = video 'test.webm', controls: true
+      video.must_have_tag :video, controls: 'controls'
+    end
+
+    it 'should be aliased for compatibility' do
+      respond_to?(:video_tag).must_equal true
+    end
+  end
+
+  describe 'audio' do
+    it 'should accept multiple sources' do
+      audios = audios 'test.ogg', 'test.aac'
+      audios.must_have_tag :source, src: '/assets/test.ogg'
+      audios.must_have_tag :source, src: '/assets/test.aac'
+    end
+
+    it 'should accept multiple sources with attributes' do
+      audios = audios 'test.ogg', 'test.aac', id: 'audio'
+      audios.must_have_tag :audio, id: 'audio'
+      audios.must_have_tag :source, src: '/assets/test.ogg'
+      audios.must_have_tag :source, src: '/assets/test.aac'
+    end
+
+    it 'should accept a single source' do
+      audio = audio 'test.ogg'
+      audio.must_have_tag :audio, src: '/assets/test.ogg'
+    end
+
+    it 'should accept a single source with attributes' do
+      audio = audio 'test.ogg', id: 'audio'
+      audio.must_have_tag :audio, src: '/assets/test.ogg', id: 'audio'
+    end
+
+    it 'should allow you to set the :class' do
+      audio = audio 'test.ogg', class: 'audio'
+      audio.must_have_tag :audio, class: 'audio'
+    end
+
+    it 'should allow you to set the :id' do
+      audio = audio 'test.ogg', id: 'audio'
+      audio.must_have_tag :audio, id: 'audio'
+    end
+
+    it 'should allow you to set :autoplay to true' do
+      audio = audio 'test.ogg', autoplay: true
+      audio.must_have_tag :audio, autoplay: 'autoplay'
+    end
+
+    it 'should allow you to set :loop to true' do
+      audio = audio 'test.ogg', loop: true
+      audio.must_have_tag :audio, loop: 'loop'
+    end
+
+    it 'should allow you to set :controls to true' do
+      audio = audio 'test.ogg', controls: true
+      audio.must_have_tag :audio, controls: 'controls'
     end
   end
 end

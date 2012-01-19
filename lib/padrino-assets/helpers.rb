@@ -51,7 +51,7 @@
       #   Script tag for +sources+ with specified +options+.
       #
       # @example
-      #   include_javascript :application, :jquery
+      #   include_javascripts :application, :jquery
       #   # => <script type="text/javascript" src="/assets/application.js"></script>
       #   # => <script type="text/javascript" src="/assets/jquery.js"></script>
       #
@@ -199,6 +199,11 @@
       # @api public
       def video(*sources)
         options = sources.extract_options!.symbolize_keys
+        sources = sources.first if sources.size == 1
+
+        if options[:poster]
+           options[:poster] = asset_path(options[:poster])
+        end
 
         if size = options.delete(:size)
           options[:width], options[:height] = size.split('x') if size =~ /^[0-9]+x[0-9]+$/
@@ -262,6 +267,7 @@
       # @api public
       def audio(*sources)
         options = sources.extract_options!.symbolize_keys
+        sources = sources.first if sources.size == 1
 
         if sources.is_a?(Array)
           content_tag(:audio, options) do
