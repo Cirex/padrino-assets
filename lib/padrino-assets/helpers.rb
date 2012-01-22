@@ -62,9 +62,9 @@
       # @api public
       def include_javascript(*sources)
         options = sources.extract_options!.symbolize_keys
-        options.reverse_merge!(type: 'text/javascript', content: '')
+        options.reverse_merge!(type: 'text/javascript')
         sources.collect do |source|
-          tag(:script, options.reverse_merge(src: asset_path(source, :js)))
+          content_tag(:script, nil, options.reverse_merge(src: asset_path(source, :js)))
         end.join("\n")
       end
       alias_method :include_javascripts,    :include_javascript
