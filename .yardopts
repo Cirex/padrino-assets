@@ -1,0 +1,10 @@
+--no-save
+--no-private
+--title Padrino Assets
+--markup-provider redcarpet
+--markup markdown
+lib/**/*.rb
+-
+README.md
+CHANGELOG.md
+LICENSE
