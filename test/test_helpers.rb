@@ -1,4 +1,4 @@
-﻿require_relative 'test'
+require_relative 'test'
 
 describe 'Helpers' do
   include Padrino::Helpers::OutputHelpers

@@ -1,4 +1,5 @@
-﻿namespace :assets do
+# encoding: utf-8
+namespace :assets do
   desc 'Compiles all assets'
   task :precompile do
     environment = Padrino::Assets.environment

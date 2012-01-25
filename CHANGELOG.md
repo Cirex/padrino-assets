@@ -1,4 +1,4 @@
-﻿# Version History
+# Version History
 
 ### 0.2.0 - (January 17, 2012)
 * The current `request` is now passed to **:assets_host** when a `Proc` is used

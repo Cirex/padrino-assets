@@ -1,4 +1,5 @@
-﻿namespace :assets do
+# encoding: utf-8
+namespace :assets do
   desc 'Compresses all compiled assets'
   task :compress do
     environment = Padrino::Assets.environment

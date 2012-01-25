@@ -1,4 +1,5 @@
-﻿module Padrino
+# encoding: utf-8
+module Padrino
   module Assets
     module Helpers
       ##

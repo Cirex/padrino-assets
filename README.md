@@ -61,4 +61,4 @@ Padrino::Assets.load_paths << 'path/to/my/assets'
 
 ### Copyright
 
-Copyright Â© 2012 Benjamin Bloch (Cirex). See LICENSE for details.
+Copyright © 2012 Benjamin Bloch (Cirex). See LICENSE for details.

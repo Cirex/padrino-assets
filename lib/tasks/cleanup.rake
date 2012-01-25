@@ -1,4 +1,5 @@
-﻿namespace :assets do
+# encoding: utf-8
+namespace :assets do
   desc 'Removes backups for existing assets'
   task :cleanup, :quanity do |task, args|
     quanity  = args['quanity'] || 2

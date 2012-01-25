@@ -1,4 +1,5 @@
-﻿require 'padrino-core'
+# encoding: utf-8
+require 'padrino-core'
 require 'padrino-helpers'
 
 FileSet.glob_require('padrino-assets/**/*.rb', __FILE__)

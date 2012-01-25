@@ -1,4 +1,4 @@
-﻿require 'webrat'
+require 'webrat'
 require 'padrino-assets'
 require 'minitest/pride'
 require 'minitest/autorun'
