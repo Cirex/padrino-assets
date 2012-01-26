@@ -2,85 +2,110 @@
 module Padrino
   module Assets
     module Helpers
-      ##
+      URI_REGEXP = %r(^[a-z]+://|^//?)
+      ###
       # Returns an HTML stylesheet link tag for the specified sources
       #
-      # @overload include_stylesheet(sources, options = {})
+      # @overload stylesheet(sources)
       #   @param [Array<String, Symbol>] sources
-      #     Sources
+      #     Asset sources
+      #
+      # @overload stylesheet(sources, options)
+      #   @param [Array<String, Symbol>] sources
+      #     Asset sources
       #   @param [Hash] options
-      #     HTML options
+      #     The HTML options to include in this stylesheet
+      #
       #   @option options [String] :media ('screen')
       #     Specifies the type of device the linked document is optimized for
       #
       # @return [String]
-      #   Stylesheet link tag for +sources+ with specified +options+.
+      #   Generated HTML for sources with specified options
       #
       # @example
-      #   include_stylesheets :application, :theme
+      #   stylesheet(:application)
+      #   # => <link href="/assets/application.css" media="screen" rel="stylesheet" type="text/css">
+      #
+      #   stylesheets(:application, :theme)
       #   # => <link href="/assets/application.css" media="screen" rel="stylesheet" type="text/css">
       #   # => <link href="/assets/theme.css" media="screen" rel="stylesheet" type="text/css">
       #
-      #   include_stylesheet :handheld, media: 'handheld'
+      #   stylesheet(:handheld, media: 'handheld')
       #   # => <link href="/assets/handheld.css" media="handheld" rel="stylesheet" type="text/css">
       #
-      #   include_stylesheet 'http://www.example.com/style.css'
+      #   stylesheet('http://www.example.com/style.css')
       #   # => <link href="http://www.example.com/style.css" media="screen" rel="stylesheet" type="text/css">
       #
       # @since 0.1.0
       # @api public
-      def include_stylesheet(*sources)
+      def stylesheet(*sources)
         options = sources.extract_options!.symbolize_keys
         options.reverse_merge!(media: 'screen', rel: 'stylesheet', type: 'text/css')
         sources.collect do |source|
           tag(:link, options.reverse_merge(href: asset_path(source, :css)))
         end.join("\n")
       end
-      alias_method :include_stylesheets, :include_stylesheet
-      alias_method :stylesheet_link_tag, :include_stylesheet
+      alias_method :stylesheets,         :stylesheet
+      alias_method :include_stylesheet,  :stylesheet
+      alias_method :include_stylesheets, :stylesheet
+      alias_method :stylesheet_link_tag, :stylesheet
 
-      ##
+      ###
       # Returns an HTML script tag for the specified sources
       #
-      # @overload include_javascript(sources, options={})
+      # @overload javascript(sources)
+      #   @param [Array<String, Symbol>] source
+      #     Asset sources
+      #
+      # @overload javascript(sources, options)
       #   @param [Array<String, Symbol>] sources
-      #     Sources
+      #     Asset sources
       #   @param [Hash] options
-      #     HTML options
+      #     The HTML options to include in this stylesheet
       #
       # @return [String]
-      #   Script tag for +sources+ with specified +options+.
+      #   Generated HTML for sources with specified options
       #
       # @example
-      #   include_javascripts :application, :jquery
-      #   # => <script type="text/javascript" src="/assets/application.js"></script>
+      #   javascript(:jquery)
       #   # => <script type="text/javascript" src="/assets/jquery.js"></script>
       #
-      #   include_javascript 'http://www.example.com/application.js'
+      #   javascripts(:jquery, :application)
+      #   # => <script type="text/javascript" src="/assets/jquery.js"></script>
+      #   # => <script type="text/javascript" src="/assets/application.js"></script>
+      #
+      #   javascript('http://www.example.com/application.js')
       #   # => <script type="text/javascript" src="http://www.example.com/application.js"></script>
       #
       # @since 0.1.0
       # @api public
-      def include_javascript(*sources)
+      def javascript(*sources)
         options = sources.extract_options!.symbolize_keys
         options.reverse_merge!(type: 'text/javascript')
         sources.collect do |source|
           content_tag(:script, nil, options.reverse_merge(src: asset_path(source, :js)))
         end.join("\n")
       end
-      alias_method :include_javascripts,    :include_javascript
-      alias_method :javascript_include_tag, :include_javascript
+      alias_method :javascripts,            :javascript
+      alias_method :include_javascript,     :javascript
+      alias_method :include_javascripts,    :javascript
+      alias_method :javascript_include_tag, :javascript
 
-      ##
-      # Returns an HTML image element with given sources and options
+      ###
+      # Returns an HTML image element for the specified sources
       #
-      # @overload image(sources, options={})
+      # @overload image(sources)
       #   @param [Array<String>] sources
-      #     Sources
+      #     Asset sources
+      #
+      # @overload image(sources, options)
+      #   @param [Array<String>] sources
+      #     Asset ources
       #   @param [Hash] options
-      #     HTML options
+      #     The HTML options to include in this image
+      #
       #   @option options [String] :id
-      #     Specifies the identifier of the image
+      #     Specifies a unique identifier for the image
       #   @option options [String] :class
       #     Specifies the class of the image
       #   @option options [String] :size
@@ -91,32 +116,35 @@ module Padrino
       #     Specifies the height of the image
       #   @option options [String] :alt
       #     Specifies an alternate text for an image
+      #   @option options [String] :title
+      #     Specifies the title of the image
+      #   @option options [Boolean] :draggable
+      #     Specifies whether or not the image is draggable (true, false, :auto)
+      #   @option options [Boolean] :hidden
+      #     Should the image be hidden from view
       #
       # @return [String]
-      #   Image tag with +url+ and specified +options+.
+      #   Generated HTML for sources with specified options
       #
       # @example
-      #   image 'example.png'
-      #   # => <img src="/assets/example.png" alt="Example" />
+      #   image('example.png')
+      #   # => <img src="/assets/example.png" alt="Example">
       #
-      #   image 'example.png', size: '40x40'
-      #   # => <img src="/assets/example.png" width="40" height="40" alt="Example" />
+      #   image('example.png', size: '40x40')
+      #   # => <img src="/assets/example.png" width="40" height="40" alt="Example">
       #
-      #   image 'example.png', width: 40
-      #   # => <img src="/assets/example.png" width="40" alt="Example" />
+      #   image('example.png', alt: 'My Little Pony')
+      #   # => <img src="/assets/example.png" alt="My Little Pony">
       #
-      #   image 'example.png', height: 40
-      #   # => <img src="/assets/example.png" height="40" alt="Example" />
+      #   image('http://www.example.com/example.png')
+      #   # => <img src="http://www.example.com/example.png">
       #
-      #   image 'example.png', alt: 'My Little Pony'
-      #   # => <img src="/assets/example.png" alt="My Little Pony" />
+      #   images('example.png', 'example.jpg')
+      #   # => <img src="/assets/example.png" alt="Example">
+      #   # => <img src="/assets/example.jpg" alt="Example">
       #
-      #   image 'http://www.example.com/example.png'
-      #   # => <img src="http://www.example.com/example.png" />
-      #
-      #   images 'example.png', 'example.jpg'
-      #   # => <img src="/assets/example.png" alt="Example" />
-      #   # => <img src="/assets/example.jpg" alt="Example" />
+      #   image('example.jpg', data: { nsfw: true, geo: [34.087, -118.407] })
+      #   # => <img src="example.jpg" data-nsfw="true" data-geo="34.087 -118.407">
       #
       # @since 0.1.0
       # @api public
@@ -124,7 +152,7 @@ module Padrino
         options = sources.extract_options!.symbolize_keys
 
         if size = options.delete(:size)
-          options[:width], options[:height] = size.split('x') if size =~ /^[0-9]+x[0-9]+$/
+          options[:width], options[:height] = size =~ /^\d+x\d+$/ ? size.split('x') : size
         end
 
         sources.collect do |source|
@@ -134,16 +162,21 @@ module Padrino
       alias_method :images,    :image
       alias_method :image_tag, :image
 
-      ##
-      # Return an HTML video element with given sources and options
+      ###
+      # Returns an HTML video element for the specified sources
       #
-      # @overload video(sources, options={})
+      # @overload video(sources)
+      #   @param [Array<String>] source
+      #     Asset Sources
+      #
+      # @overload video(sources, options)
       #   @param [Array<String>] sources
-      #     Sources
+      #     Asset Sources
       #   @param [Hash] options
-      #     HTML options
+      #     The HTML options to include in this video
+      #
       #   @option options [String] :id
-      #     Specifies the identifier of the video
+      #     Specifies a unique identifier for the video
       #   @option options [String] :class
       #     Specifies the class of the video
       #   @option options [String] :size
@@ -152,10 +185,16 @@ module Padrino
       #     Specifies the width of the video
       #   @option options [Integer] :height
       #     Specifies the height of the video
-      #   @option options [String] :preload
-      #     Specifies the method the web browser should use to preload the video
+      #   @option options [String] :title
+      #     Specifies the title of the video
+      #   @option options [Boolean] :draggable
+      #     Specifies whether or not the video is draggable (true, false, :auto)
+      #   @option options [Symbol] :preload
+      #     Specifies the method the web browser should use to preload the video (:auto, :metadata, :none)
       #   @option options [String] :poster
       #     Specifies an image to be shown while the video is downloading, or until the user hits the play button
+      #   @option options [Boolean] :hidden
+      #     Should the video be hidden from view
       #   @option options [Boolean] :controls
       #     Should the video controls be shown if present
       #   @option options [Boolean] :muted
@@ -166,48 +205,42 @@ module Padrino
       #     Should the video automatically loop when it's done
       #
       # @return [String]
-      #   Video tag with +url+ and specified +options+
+      #   Generated HTML for sources with specified options
       #
       # @example
-      #   video 'example.webm'
-      #   # => <video src="/assets/example.webm" />
+      #   video('example.webm')
+      #   # => <video src="/assets/example.webm">
       #
-      #   video 'example.webm', controls: true, autoplay: true
-      #   # => <video src="/assets/example.webm" controls="controls" autoplay="autoplay" />
+      #   video('example.webm', loop: true, autoplay: true)
+      #   # => <video src="/assets/example.webm" loop="loop" autoplay="autoplay">
       #
-      #   video 'example.webm', loop: true
-      #   # => <video src="/assets/example.webm" loop="loop" />
+      #   video('example.webm', size: '40x40')
+      #   # => <video src="/assets/example.webm" width="40" height="40">
       #
-      #   video 'example.webm', size: '40x40'
-      #   # => <video src="/assets/example.webm" width="40" height="40" />
+      #   video('http://www.example.com/example.webm')
+      #   # => <video src="http://www.example.com/example.webm">
       #
-      #   video 'example.webm', height: 40
-      #   # => <video src="/assets/example.webm" height="40" />
-      #
-      #   video 'example.webm', width: 40
-      #   # => <video src="/assets/example.webm" width="40" />
-      #
-      #   video 'http://www.example.com/example.webm'
-      #   # => <video src="http://www.example.com/example.webm" />
-      #
-      #   videos 'example.webm', 'example.mov'
+      #   videos('example.webm', 'example.mov')
       #   # => <video>
-      #   # =>   <source src="/assets/example.webm" />
-      #   # =>   <source src="/assets/example.mov" />
+      #   # =>   <source src="/assets/example.webm">
+      #   # =>   <source src="/assets/example.mov">
       #   # => </video>
+      #
+      #   video('example.webm', poster: 'preload.jpg')
+      #   # => <video src="/assets/example.webm" poster="/assets/preload.jpg">
       #
       # @since 0.1.0
       # @api public
       def video(*sources)
         options = sources.extract_options!.symbolize_keys
-        sources = sources.first if sources.size == 1
+        sources = sources.shift if sources.size == 1
 
         if options[:poster]
            options[:poster] = asset_path(options[:poster])
         end
 
         if size = options.delete(:size)
-          options[:width], options[:height] = size.split('x') if size =~ /^[0-9]+x[0-9]+$/
+          options[:width], options[:height] = size =~ /^\d+x\d+$/ ? size.split('x') : size
         end
 
         if sources.is_a?(Array)
@@ -221,20 +254,29 @@ module Padrino
       alias_method :videos,    :video
       alias_method :video_tag, :video
 
-      ##
-      # Returns an HTML audio element with given sources and options
+      ###
+      # Returns an HTML audio element for the specified sources
       #
-      # @overload audio(sources, options={})
+      # @overload audio(sources)
       #   @param [Array<String>] sources
-      #     Sources
+      #     Asset sources
+      #
+      # @overload audio(sources, options)
+      #   @param [Array<String>] sources
+      #     Asset sources
       #   @param [Hash] options
-      #     HTML options
+      #     The HTML options to include in this audio
+      #
       #   @option options [String] :id
-      #     Specifies the identifier of the audio
+      #     Specifies a unique identifier for the audio
       #   @option options [String] :class
       #     Specifies the class of the audio
-      #   @option options [String] :preload
-      #     Specifies the method the web browser should use to preload the audio 
+      #   @option options [Boolean] :draggable
+      #     Specifies whether or not the audio is draggable (true, false, :auto)
+      #   @option options [Symbol] :preload
+      #     Specifies the method the web browser should use to preload the audio (:auto, :metadata, :none)
+      #   @option options [Boolean] :hidden
+      #     Should the audio be hidden from view
       #   @option options [Boolean] :controls
       #     Should the audio controls be shown if present
       #   @option options [Boolean] :autoplay
@@ -243,32 +285,29 @@ module Padrino
       #     Should the audio automatically loop when it's done
       #
       # @return [String]
-      #   Audio tag with +url+ and specified +options+
+      #   Generated HTML for sources with specified options
       #
       # @example
-      #   audio 'example.ogg'
-      #   # => <audio src="/assets/example.ogg" />
+      #   audio('example.ogg')
+      #   # => <audio src="/assets/example.ogg">
       #
-      #   audio 'example.ogg', controls: true, autoplay: true
-      #   # => <audio src="/assets/example.ogg" controls="controls" autoplay="autoplay" />
+      #   audio('example.ogg', loop: true, autoplay: true)
+      #   # => <audio src="/assets/example.ogg" loop="loop" autoplay="autoplay">
       #
-      #   audio 'example.ogg', loop: true
-      #   # => <audio src="/assets/example.ogg" loop="loop" />
+      #   audio('http://www.example.com/example.ogg')
+      #   # => <audio src="http://www.example.com/example.ogg">
       #
-      #   audio 'http://www.example.com/example.ogg'
-      #   # => <audio src="http://www.example.com/example.ogg" />
-      #
-      #   audios 'example.ogg', 'example.mp4'
+      #   audios('example.ogg', 'example.mp4')
       #   # => <audio>
-      #   # =>   <source src="/assets/example.ogg" />
-      #   # =>   <source src="/assets/example.mp4" />
+      #   # =>   <source src="/assets/example.ogg">
+      #   # =>   <source src="/assets/example.mp4">
       #   # => </audio>
       #
       # @since 0.1.0
       # @api public
       def audio(*sources)
         options = sources.extract_options!.symbolize_keys
-        sources = sources.first if sources.size == 1
+        sources = sources.shift if sources.size == 1
 
         if sources.is_a?(Array)
           content_tag(:audio, options) do
@@ -281,13 +320,14 @@ module Padrino
       alias_method :audios,    :audio
       alias_method :audio_tag, :audio
 
-      ##
-      # Determines whether or not the provided source is a valid URI
+      ###
+      # Returns whether or not the provided source is a valid URI
       #
       # @param [String] source
-      #   URI Source
+      #   URI source
       #
       # @return [Boolean]
+      #   *true* if it is a valid, *false* otherwise
       #
       # @example
       #   is_uri?('http://www.example.com')
@@ -302,22 +342,22 @@ module Padrino
       #   is_uri?('/example/example.css')
       #   # => true
       #
+      #   is_uri?('example.css')
+      #   # => false
+      #
       # @since 0.1.0
       # @api public
       def is_uri?(source)
         !!(source =~ URI_REGEXP)
       end
 
-      URI_REGEXP = %r[^[a-z]+://|^//?]
-
-      ##
+      ###
       # Returns a modified asset source based on the current application settings
       #
-      # @overload asset_path(source, extension = nil)
-      #   @param [String] source
-      #     Source
-      #   @param [Symbol] extension (nil)
-      #     File extension
+      # @param [String] source
+      #   Asset source
+      # @param [Symbol] extension
+      #   Asset file extension
       #
       # @return [String]
       #   Modified source based on application settings
@@ -346,7 +386,6 @@ module Padrino
 
     private
 
-      # @private
       def rewrite_extension(source, extension)
         if extension && File.extname(source).empty?
           "#{source}.#{extension}"
@@ -355,7 +394,6 @@ module Padrino
         end
       end
 
-      # @private
       def rewrite_asset(source)
         if settings.index_assets? && asset = Assets.manifest.assets[source]
           source = asset
@@ -363,18 +401,16 @@ module Padrino
         source
       end
 
-      # @private
       def rewrite_asset_path(source)
         source = File.join(settings.assets_prefix, source)
         source = "/#{source}" unless source[0] == ?/
         source
       end
 
-      # @private
       def rewrite_asset_host(source)
         host = settings.assets_host rescue settings.assets_host(source, request)
         host ? host + source : source
       end
-    end
-  end
-end
+    end # Helpers
+  end # Assets
+end # Padrino
