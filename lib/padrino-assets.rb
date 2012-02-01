@@ -61,9 +61,9 @@ module Padrino
         app.set :manifest_file,   -> { File.join(app.public_folder, app.assets_prefix, 'manifest.json') }
         app.set :precompile_assets,  [ /^.+\.(?!js|css).+$/i, /^application\.(js|css)$/i ]
 
-        require 'sprockets'
-
         Padrino.after_load do
+          require 'sprockets'
+
           @_environment = Sprockets::Environment.new(app.root) do |environment|
             environment.logger  = app.logger
             environment.version = app.assets_version
