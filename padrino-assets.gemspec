@@ -20,6 +20,6 @@ Gem::Specification.new do |s|
   s.add_dependency 'padrino-core'
   s.add_dependency 'padrino-helpers'
 
-  s.add_development_dependency 'minitest'
-  s.add_development_dependency 'webrat'
+  s.add_development_dependency 'rspec', '>= 2.0.0'
+  s.add_development_dependency 'rspec-html-matchers'
 end
