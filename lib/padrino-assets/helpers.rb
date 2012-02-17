@@ -2,7 +2,7 @@
 module Padrino
   module Assets
     module Helpers
-      URI_REGEXP = %r(^[a-z]+://|^//?)
+      URI_REGEXP = %r(^[a-z]+://|^/)
       ###
       # Returns an HTML stylesheet link tag for the specified sources
       #
@@ -61,7 +61,7 @@ module Padrino
       #   @param [Array<String, Symbol>] sources
       #     Asset sources
       #   @param [Hash] options
-      #     The HTML options to include in this stylesheet
+      #     The HTML options to include in this script tag
       #
       # @return [String]
       #   Generated HTML for sources with specified options
@@ -133,11 +133,14 @@ module Padrino
       #   image('example.png', size: '40x40')
       #   # => <img src="/assets/example.png" width="40" height="40" alt="Example">
       #
+      #   image('example.png', size: [40, 40])
+      #   # => <img src="/assets/example.png" width="40" height="40" alt="Example">
+      #
       #   image('example.png', alt: 'My Little Pony')
       #   # => <img src="/assets/example.png" alt="My Little Pony">
       #
       #   image('http://www.example.com/example.png')
-      #   # => <img src="http://www.example.com/example.png">
+      #   # => <img src="http://www.example.com/example.png" alt="Example">
       #
       #   images('example.png', 'example.jpg')
       #   # => <img src="/assets/example.png" alt="Example">
@@ -156,11 +159,34 @@ module Padrino
         end
 
         sources.collect do |source|
-          tag(:img, options.reverse_merge(src: asset_path(source)))
+          alternate_text = options.fetch(:alt, alternate_text(source))
+          tag(:img, options.reverse_merge(src: asset_path(source), alt: alternate_text))
         end.join("\n")
       end
       alias_method :images,    :image
       alias_method :image_tag, :image
+
+      ###
+      # Returns an alternate text based off the specified source
+      #
+      # @param [String] source
+      #   Asset Source
+      #
+      # @return [String]
+      #   Humanized alternate text
+      #
+      # @example
+      #   alternate_text('padrino.jpg')
+      #   # => 'Padrino'
+      #
+      #   alternate_text('my_pony.jpg')
+      #   # => 'My pony'
+      #
+      # @since 0.3.0
+      # @api semipublic
+      def alternate_text(source)
+        File.basename(source, '.*').humanize
+      end
 
       ###
       # Returns an HTML video element for the specified sources
@@ -215,6 +241,9 @@ module Padrino
       #   # => <video src="/assets/example.webm" loop="loop" autoplay="autoplay">
       #
       #   video('example.webm', size: '40x40')
+      #   # => <video src="/assets/example.webm" width="40" height="40">
+      #
+      #   video('example.webm', size: [40, 40])
       #   # => <video src="/assets/example.webm" width="40" height="40">
       #
       #   video('http://www.example.com/example.webm')
