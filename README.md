@@ -31,8 +31,6 @@ map '/assets' do
 end
 ```
 
-* __Note:__  `padrino start` ignores the `config.ru` file. Launch your development server with `rackup` instead.
-
 By default, Sprockets is configured to load assets from your project's `app/assets` and `lib/assets` directories. Any files stored in these directories are readily available to the included helpers, and will be served by the Sprockets middleware.
 
 Because of this the following directories are no longer used, and will be served statically:
