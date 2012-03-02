@@ -8,6 +8,8 @@ namespace :assets do
     apps.each do |app|
       app = app.app_obj
 
+      next unless app.extensions.include?(Padrino::Assets)
+
       app.precompile_assets.each do |path|
         environment.each_logical_path.each do |logical_path|
           case path
