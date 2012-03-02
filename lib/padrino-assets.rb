@@ -52,6 +52,46 @@ module Padrino
         @_manifest
       end
 
+      ###
+      # Returns a list of available asset compressors
+      #
+      # @return [Hash]
+      #   List of available asset compressors
+      #
+      # @since 0.3.0
+      # @api public
+      def compressors
+        @_compressors ||= Hash.new { |k, v| k[v] = Hash.new }
+      end
+
+      ###
+      # Registers an asset compressor for use with Sprockets
+      #
+      # @param [Symbol] type
+      #   The type of compressor you are registering (:js, :css)
+      #
+      # @example
+      #   Padrino::Assets.register_compressor :js,  :simple => 'SimpleCompressor'
+      #   Padrino::Assets.register_compressor :css, :simple => 'SimpleCompressor'
+      #
+      # @since 0.3.0
+      # @api public
+      def register_compressor(type, compressor)
+        compressors[type].merge!(compressor)
+      end
+
+      # @since 0.3.0
+      # @api private
+      def find_registered_compressor(type, compressor)
+        return compressor unless compressor.is_a?(Symbol)
+
+        if compressor = compressors[type][compressor]
+           compressor = compressor.safe_constantize
+        end
+
+        compressor.respond_to?(:new) ? compressor.new : compressor
+      end
+
       # @private
       def registered(app)
         app.helpers Helpers
@@ -63,29 +103,29 @@ module Padrino
         app.set :css_compressor,  nil
         app.set :index_assets,    -> { app.environment == :production }
         app.set :manifest_file,   -> { File.join(app.public_folder, app.assets_prefix, 'manifest.json') }
-        app.set :precompile_assets,  [ /^.+\.(?!js|css).+$/i, /^application\.(js|css)$/i ]
+        app.set :precompile_assets,  [ /^\w+\.(?!(?:js|css)$)/i, /^application\.(js|css)$/i ]
 
         Padrino.after_load do
           require 'sprockets'
 
-          environment = Sprockets::Environment.new(Padrino.root) do |environment|
-            environment.logger  = app.logger
-            environment.version = app.assets_version
+          environment = Sprockets::Environment.new(Padrino.root)
 
-            if defined?(Padrino::Cache)
-              if app.respond_to?(:caching) && app.caching?
-                environment.cache = app.cache
-              end
-            end
+          environment.logger  = app.logger
+          environment.version = app.assets_version
 
-            if app.compress_assets?
-              environment.js_compressor  = app.js_compressor
-              environment.css_compressor = app.css_compressor
+          if defined?(Padrino::Cache)
+            if app.respond_to?(:caching) && app.caching?
+              environment.cache = app.cache
             end
+          end
 
-            load_paths.flatten.each do |path|
-              environment.append_path(path)
-            end
+          if app.compress_assets?
+            environment.js_compressor  = find_registered_compressor(:js,  app.js_compressor)
+            environment.css_compressor = find_registered_compressor(:css, app.css_compressor)
+          end
+
+          load_paths.flatten.each do |path|
+            environment.append_path(path)
           end
 
           environment.context_class.class_eval do
@@ -93,11 +133,16 @@ module Padrino
           end
 
           @_environment = app.index_assets ? environment.index : environment
-          @_manifest = Sprockets::Manifest.new(@_environment, app.manifest_file)
+          @_manifest    = Sprockets::Manifest.new(@_environment, app.manifest_file)
         end
 
         Padrino::Tasks.files << Dir[File.dirname(__FILE__) + '/tasks/**/*.rake']
       end
-    end # self
+    end
+
+    register_compressor :css, :yui      => 'YUI::CssCompressor'
+    register_compressor :js,  :yui      => 'YUI::JavaScriptCompressor'
+    register_compressor :js,  :closure  => 'Closure::Compiler'
+    register_compressor :js,  :uglifier => 'Uglifier'
   end # Assets
 end # Padrino

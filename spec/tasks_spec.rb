@@ -4,7 +4,9 @@ require 'tmpdir'
 require 'rake'
 
 describe 'Rake Tasks' do
-  let(:temp_directory) { File.join(Dir.tmpdir, 'sprockets') }
+  let :temp_directory do
+   File.join(Dir.tmpdir, 'sprockets')
+  end
 
   let(:image)      { File.join(temp_directory, environment['pony.jpg'].digest_path) }
   let(:stylesheet) { File.join(temp_directory, environment['application.css'].digest_path) }
@@ -17,15 +19,12 @@ describe 'Rake Tasks' do
   before do
     app.set :manifest_file, File.join(temp_directory, 'manifest.json')
     app.set :app_obj, app
-  end
 
-  before do
-    Padrino.mounted_apps.clear
+    Padrino.after_load.each(&:call)
+    Padrino.clear!
+
     Padrino.insert_mounted_app(app)
-    Padrino.reload!
-  end
 
-  before do
     Rake.application = Rake::Application.new
     Dir.glob(File.expand_path('../../lib/tasks/*.rake', __FILE__)).each do |task|
       load(task)
@@ -101,7 +100,7 @@ describe 'Rake Tasks' do
     end
 
     it 'should only compress text based assets' do
-      app.set :precompile_assets, [/^.+$/]
+      app.set :precompile_assets, [/.+/]
       app.set :compress_assets, false
 
       rake['assets:precompile'].invoke

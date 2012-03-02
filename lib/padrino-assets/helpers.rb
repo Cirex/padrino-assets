@@ -424,7 +424,7 @@ module Padrino
       end
 
       def rewrite_asset(source)
-        if settings.index_assets? && asset = Assets.manifest.assets[source]
+        if settings.index_assets && asset = Assets.manifest.assets[source]
           source = asset
         end
         source
