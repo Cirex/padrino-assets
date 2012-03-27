@@ -16,6 +16,9 @@ module Padrino
       # @example
       #   Padrino::Assets.load_paths << Dir[Padrino.root('vendor', '**', 'assets')]
       #
+      # @deprecated
+      #   Use Sprockets.append_path and Sprockets.prepend_path instead
+      #
       # @since 0.1.0
       # @api public
       def load_paths

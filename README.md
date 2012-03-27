@@ -48,7 +48,7 @@ You should now be storing your assets in the following directories:
 Should your project need to add additional paths you can easily do so by adding the following line:
 
 ``` ruby
-Padrino::Assets.load_paths << 'path/to/my/assets'
+Sprockets.append_path('path/to/my/assets')
 ```
 
 Configuration
