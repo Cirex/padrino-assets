@@ -16,7 +16,7 @@ Gem::Specification.new do |s|
   s.executables   = `git ls-files -- bin/*`.split("\n").map{ |f| File.basename(f) }
   s.require_paths = ['lib']
 
-  s.add_dependency 'sprockets', '~> 2.3.0'
+  s.add_dependency 'sprockets', '~> 2.4.0'
   s.add_dependency 'padrino-core'
   s.add_dependency 'padrino-helpers'
 
