@@ -23,4 +23,5 @@ Gem::Specification.new do |s|
   s.add_development_dependency 'rake'
   s.add_development_dependency 'rspec', '>= 2.0.0'
   s.add_development_dependency 'rspec-html-matchers'
+  s.add_development_dependency 'yard'
 end
