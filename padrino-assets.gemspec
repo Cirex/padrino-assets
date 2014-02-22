@@ -1,27 +1,28 @@
-# encoding: utf-8
-$:.push File.expand_path('../lib', __FILE__)
-require 'padrino-assets/version'
+require_relative 'lib/padrino-assets/version'
 
-Gem::Specification.new do |s|
-  s.name        = 'padrino-assets'
-  s.version     = Padrino::Assets::VERSION
-  s.authors     = ['Benjamin Bloch']
-  s.email       = ['cirex@gamesol.org']
-  s.homepage    = 'https://github.com/Cirex/padrino-assets'
-  s.description = 'A plugin for the Padrino web framework which uses Sprockets to manage and compile assets'
-  s.summary     = s.description
+Gem::Specification.new do |spec|
+  spec.name          = 'padrino-assets'
+  spec.version       = Padrino::Assets::VERSION
+  spec.authors       = ['Benjamin Bloch']
+  spec.email         = ['cirex@aethernet.org']
+  spec.homepage      = 'https://github.com/Cirex/padrino-assets'
+  spec.license       = 'MIT'
+  spec.description   = 'A plugin for the Padrino web framework which uses Sprockets to manage and compile assets'
+  spec.summary       = spec.description
 
-  s.files         = `git ls-files`.split("\n")
-  s.test_files    = `git ls-files -- {test,spec,features}/*`.split("\n")
-  s.executables   = `git ls-files -- bin/*`.split("\n").map{ |f| File.basename(f) }
-  s.require_paths = ['lib']
+  spec.files         = `git ls-files`.split($/)
+  spec.executables   = spec.files.grep(%r(/bin/)) { |file| File.basename(file) }
+  spec.test_files    = spec.files.grep(%r(/spec/))
+  spec.require_paths = ['lib']
 
-  s.add_dependency 'sprockets', '~> 2.4.0'
-  s.add_dependency 'padrino-core'
-  s.add_dependency 'padrino-helpers'
+  spec.add_dependency 'sprockets', '~> 2.11'
+  spec.add_dependency 'padrino-core'
+  spec.add_dependency 'padrino-helpers'
 
-  s.add_development_dependency 'rake'
-  s.add_development_dependency 'rspec', '>= 2.0.0'
-  s.add_development_dependency 'rspec-html-matchers'
-  s.add_development_dependency 'yard'
+  spec.add_development_dependency 'rake'
+  spec.add_development_dependency 'rspec', '>= 2.0.0'
+  spec.add_development_dependency 'rspec-html-matchers'
+  spec.add_development_dependency 'yard'
+
+  spec.required_ruby_version = '>= 1.9.3'
 end
