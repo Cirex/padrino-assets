@@ -123,4 +123,4 @@ TODO
 Copyright
 ---------
 
-Copyright &copy; 2012 Benjamin Bloch (Cirex). See LICENSE for details.
+Copyright &copy; 2012-2014 Benjamin Bloch (Cirex). See MIT-LICENSE for details.
