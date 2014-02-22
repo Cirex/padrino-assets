@@ -15,6 +15,13 @@ Gem::Specification.new do |spec|
   spec.test_files    = spec.files.grep(%r(/spec/))
   spec.require_paths = ['lib']
 
+  private_key = File.expand_path('~/keys/gem-private.pem')
+
+  if File.exist?(private_key)
+    spec.signing_key = private_key
+    spec.cert_chain  = ['padrino-assets.pem']
+  end
+
   spec.add_dependency 'sprockets', '~> 2.11'
   spec.add_dependency 'padrino-core'
   spec.add_dependency 'padrino-helpers'
