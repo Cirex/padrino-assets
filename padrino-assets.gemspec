@@ -2,7 +2,7 @@ require_relative 'lib/padrino-assets/version'
 
 Gem::Specification.new do |spec|
   spec.name          = 'padrino-assets'
-  spec.version       = Padrino::Assets::VERSION
+  spec.version       = Padrino::Assets.version
   spec.authors       = ['Benjamin Bloch']
   spec.email         = ['cirex@aethernet.org']
   spec.homepage      = 'https://github.com/Cirex/padrino-assets'
