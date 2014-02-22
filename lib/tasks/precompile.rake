@@ -1,7 +1,6 @@
-# encoding: utf-8
 namespace :assets do
   desc 'Compiles all assets'
-  task :precompile do
+  task :precompile => :environment do
     environment = Padrino::Assets.environment
     manifest = Padrino::Assets.manifest
     apps = Padrino.mounted_apps
